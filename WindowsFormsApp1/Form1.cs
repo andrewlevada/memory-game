@@ -51,46 +51,55 @@ namespace WindowsFormsApp1
                     nb.Tag = nums[i * K + j];
                     //nb.Text = nums[i * K + j].ToString();
                     nb.Text = "*";
-                    //nb.Font.Size = 33;
+                    nb.Font = new System.Drawing.Font("Microsoft Sans Serif", 40F, System.Drawing.FontStyle.Regular,System.Drawing.GraphicsUnit.Point, ((byte)(204)));
                     nb.Location = new Point(i * 100, j * 100);
                     nb.Size = new Size(100, 100);
-                    nb.Click += button1_Click;
+                    nb.Click += button1_ClickAsync;
                     nb.Parent = this;
                     tiles[i, j] = nb;
                 }
         }
 
-		private void button1_Click(object sender, EventArgs e)
-		{
-			if (prevBtn == null)
-			{
-				prevBtn = sender as Button;
-				prevBtn.Text = prevBtn.Tag.ToString();
-			}
-			else
-			{
-				Button newBtn = sender as Button;
-
-				int tag1 = int.Parse((newBtn).Tag.ToString());
-				int tag2 = int.Parse((prevBtn).Tag.ToString());
-                
-
-                if (tag1 == tag2)
-				{
-					newBtn.Enabled = false;
-                    prevBtn.Enabled = false;
-				}
-				else
-				{
-                    //newBtn.Text = tag1.ToString();
-                   // prevBtn.Text = tag2.ToString();
-                   newBtn.Text = "*";
-				}
-				prevBtn = null;
+        private async void button1_ClickAsync(object sender, EventArgs e)
+        {
+            if (prevBtn == null)
+            {
+                prevBtn = sender as Button;
+                prevBtn.Text = prevBtn.Tag.ToString();
+                prevBtn.Enabled = false;
             }
-			//int number = int.Parse((sender as Button).Tag.ToString());
-			//MessageBox.Show("нажата кнопка " + number.ToString(), "Заголовок");
-		}
+            else
+            {
+                Button newBtn = sender as Button;
+
+                //int tag1 = int.Parse((newBtn).Tag.ToString());
+                //int tag2 = int.Parse((prevBtn).Tag.ToString());
+
+                if (newBtn.Tag.ToString() != prevBtn.Tag.ToString())
+                {
+                    newBtn.Text = newBtn.Tag.ToString();
+                    await Task.Delay(1000);
+                    newBtn.Text = "*";
+                    prevBtn.Text = "*";
+                    prevBtn.Enabled = true;
+                }
+                else
+                {
+                    //newBtn.Text = tag1.ToString();
+                    // prevBtn.Text = tag2.ToString();
+                    newBtn.Text = newBtn.Tag.ToString();
+                    newBtn.Enabled = false;
+                    prevBtn.Enabled = false;
+                }
+                prevBtn = null;
+
+                //   а что, если мы два раза нажали на одну и ту же кнопку??
+               
+            }
+            //int number = int.Parse((sender as Button).Tag.ToString());
+            //MessageBox.Show("нажата кнопка " + number.ToString(), "Заголовок");
+
+        }
 
         private void Form1_Load(object sender, EventArgs e)
         {
