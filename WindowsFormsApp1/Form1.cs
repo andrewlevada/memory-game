@@ -50,14 +50,19 @@ namespace WindowsFormsApp1
                     var nb = new Button();
                     nb.Tag = nums[i * K + j];
                     //nb.Text = nums[i * K + j].ToString();
+                    nb.FlatStyle = FlatStyle.Flat;
                     nb.Text = "*";
                     nb.Font = new System.Drawing.Font("Microsoft Sans Serif", 40F, System.Drawing.FontStyle.Regular,System.Drawing.GraphicsUnit.Point, ((byte)(204)));
                     nb.Location = new Point(i * 100, j * 100);
                     nb.Size = new Size(100, 100);
+                    nb.FlatStyle = FlatStyle.Flat;
                     nb.Click += button1_ClickAsync;
                     nb.Parent = this;
                     tiles[i, j] = nb;
+                    nb.BringToFront();
                 }
+            pictureBox1.Size = new Size(K * 100, K * 100);
+            pictureBox1.Location = new Point(0, 0);
         }
 
         private async void button1_ClickAsync(object sender, EventArgs e)
@@ -78,18 +83,19 @@ namespace WindowsFormsApp1
                 if (newBtn.Tag.ToString() != prevBtn.Tag.ToString())
                 {
                     newBtn.Text = newBtn.Tag.ToString();
-                    await Task.Delay(1000);
+                    prevBtn.Enabled = true;
+                    await Task.Delay(500);
                     newBtn.Text = "*";
                     prevBtn.Text = "*";
-                    prevBtn.Enabled = true;
                 }
                 else
                 {
                     //newBtn.Text = tag1.ToString();
                     // prevBtn.Text = tag2.ToString();
                     newBtn.Text = newBtn.Tag.ToString();
-                    newBtn.Enabled = false;
-                    prevBtn.Enabled = false;
+                    newBtn.Visible = false;
+                    prevBtn.Visible = false;
+                    CheckWin();
                 }
                 prevBtn = null;
 
@@ -101,12 +107,14 @@ namespace WindowsFormsApp1
 
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void CheckWin()
         {
-
+            DialogResult dialogResult = MessageBox.Show("You won!", "WIN", MessageBoxButtons.RetryCancel);
+            if (dialogResult == DialogResult.Retry)
+                TilesGen();
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
         {
 
         }
