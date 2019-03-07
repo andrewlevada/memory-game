@@ -10,7 +10,7 @@ namespace WindowsFormsApp1
 		Random rnd = new Random();
 		Button[,] buttons = null;
 		Button PrevBTN = null;
-		const int shmebulok = 10;
+        const int shmebulok = 4;
 		public Form1()
 		{
 			InitializeComponent();
@@ -67,15 +67,19 @@ namespace WindowsFormsApp1
 			{
 				Button newBTN = sender as Button;
 
-				if (newBTN.Tag == PrevBTN.Tag)
+				if (newBTN.Tag.ToString() == PrevBTN.Tag.ToString())
 				{
 					newBTN.Enabled = false;
-					PrevBTN.Enabled = true;
-				}
+					PrevBTN.Enabled = false;
+                }
 				else
 				{
-					PrevBTN.Text = "*";
+                    newBTN.Text = newBTN.Tag.ToString();
+                    System.Threading.Thread.Sleep(100);
+                    newBTN.Text = "*";
+                    PrevBTN.Text = "*";
 				}
+
 				PrevBTN = null;
 			}
 
