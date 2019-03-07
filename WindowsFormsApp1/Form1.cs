@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Linq;
 
 namespace WindowsFormsApp1
 {
@@ -44,24 +44,32 @@ namespace WindowsFormsApp1
 				{
 					Button nb = new Button();
 					nb.Tag = nums[i * shmebulok + j];
-					nb.Text = nums[i * shmebulok + j].ToString();
-					nb.Location = new Point(i * 50, j * 50);
+					nb.Text = "*";
+                    nb.Font = new Font("Microsoft Sans Serif", 30F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(204)));
+                    nb.Location = new Point(i * 50, j * 50);
 					nb.Size = new Size(50, 50);
+                    nb.FlatStyle = FlatStyle.Flat;
 
 					nb.Click += button1_Click;
 
 					nb.Parent = this;
 
 					buttons[i, j] = nb;
-				}
-		}
 
-		private void button1_Click(object sender, EventArgs e)
+                    nb.BringToFront();
+				}
+
+            pictureBox1.Size = new Size(shmebulok * 50, shmebulok * 50);
+            pictureBox1.Location = new Point(0, 0);
+        }
+
+		private async void button1_Click(object sender, EventArgs e)
 		{
 			if (PrevBTN == null)
 			{
 				PrevBTN = sender as Button;
 				PrevBTN.Text = PrevBTN.Tag.ToString();
+                PrevBTN.Enabled = false;
 			}
 			else
 			{
@@ -69,24 +77,31 @@ namespace WindowsFormsApp1
 
 				if (newBTN.Tag.ToString() == PrevBTN.Tag.ToString())
 				{
-					newBTN.Enabled = false;
-					PrevBTN.Enabled = false;
+					newBTN.Visible = false;
+					PrevBTN.Visible = false;
+                    CheckWin();
                 }
 				else
 				{
                     newBTN.Text = newBTN.Tag.ToString();
-                    System.Threading.Thread.Sleep(100);
+                    PrevBTN.Enabled = true;
+                    await Task.Delay(500);
                     newBTN.Text = "*";
                     PrevBTN.Text = "*";
 				}
 
 				PrevBTN = null;
 			}
+        }
 
-			/*
-			int number = int.Parse((sender as Button).Tag.ToString());
-			MessageBox.Show("BUTTON " + number + " PRESSED", "TITILE");
-			*/
-		}
-	}
+        private void CheckWin()
+        {
+            foreach (Button e in buttons)
+                if (e.Visible == true) return;
+
+            DialogResult dialogResult = MessageBox.Show("You won!", "WIN", MessageBoxButtons.RetryCancel);
+            if (dialogResult == DialogResult.Retry)
+                TilesGen();
+        }
+    }
 }
