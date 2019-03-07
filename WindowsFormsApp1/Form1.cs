@@ -52,7 +52,7 @@ namespace WindowsFormsApp1
 
 					nb.Click += button1_Click;
 
-					nb.Parent = this;
+                    nb.Parent = this;
 
 					buttons[i, j] = nb;
 
