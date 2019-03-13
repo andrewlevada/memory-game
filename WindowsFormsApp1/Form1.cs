@@ -8,8 +8,8 @@ namespace WindowsFormsApp1
 	public partial class Form1 : Form
 	{
 		Random rnd = new Random();
-		Button[,] buttons = null;
-		Button PrevBTN = null;
+		PictureBox[,] buttons = null;
+		PictureBox PrevBTN = null;
         const int shmebulok = 4;
 		public Form1()
 		{
@@ -35,20 +35,24 @@ namespace WindowsFormsApp1
 				nums[p2] = tmp;
 			}
 
-			buttons = new Button[shmebulok, shmebulok];
+			buttons = new PictureBox[shmebulok, shmebulok];
 
-			Size = new Size(shmebulok * 50 + 100, shmebulok * 50 + 100);
+			Size = new Size(shmebulok * 100 + 15, shmebulok * 100 + 50);
 
 			for (int i = 0; i < shmebulok; i++)
 				for (int j = 0; j < shmebulok; j++)
 				{
-					Button nb = new Button();
+					PictureBox nb = new PictureBox();
 					nb.Tag = nums[i * shmebulok + j];
-					nb.Text = "*";
-                    nb.Font = new Font("Microsoft Sans Serif", 30F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(204)));
-                    nb.Location = new Point(i * 50, j * 50);
-					nb.Size = new Size(50, 50);
-                    nb.FlatStyle = FlatStyle.Flat;
+
+					//nb.Text = "*";
+                    //nb.Font = new Font("Microsoft Sans Serif", 30F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(204)));
+
+                    nb.Location = new Point(i * 100, j * 100);
+					nb.Size = new Size(100, 100);
+
+					nb.BackgroundImage = Properties.Resources.back;
+					nb.BackgroundImageLayout = ImageLayout.Zoom;
 
 					nb.Click += button1_Click;
 
@@ -59,35 +63,39 @@ namespace WindowsFormsApp1
                     nb.BringToFront();
 				}
 
-            pictureBox1.Size = new Size(shmebulok * 50, shmebulok * 50);
+            pictureBox1.Size = new Size(shmebulok * 100, shmebulok * 100);
             pictureBox1.Location = new Point(0, 0);
+
+			progressBar1.Maximum = shmebulok * shmebulok * 10;
+			progressBar1.Width = Size.Width;
+			progressBar1.Location = new Point(0, Size.Height - 50);
+			progressBar1.Value = 0;
         }
 
 		private async void button1_Click(object sender, EventArgs e)
 		{
 			if (PrevBTN == null)
 			{
-				PrevBTN = sender as Button;
-				PrevBTN.Text = PrevBTN.Tag.ToString();
-                PrevBTN.Enabled = false;
+				PrevBTN = sender as PictureBox;
+				PrevBTN.BackgroundImage = Properties.Resources.ResourceManager.GetObject("img" + PrevBTN.Tag.ToString()) as Image;
 			}
 			else
 			{
-				Button newBTN = sender as Button;
+				PictureBox newBTN = sender as PictureBox;
 
 				if (newBTN.Tag.ToString() == PrevBTN.Tag.ToString())
 				{
 					newBTN.Visible = false;
 					PrevBTN.Visible = false;
+					progressBar1.Value += 20;
                     CheckWin();
                 }
 				else
 				{
-                    newBTN.Text = newBTN.Tag.ToString();
-                    PrevBTN.Enabled = true;
-                    await Task.Delay(500);
-                    newBTN.Text = "*";
-                    PrevBTN.Text = "*";
+					newBTN.BackgroundImage = Properties.Resources.ResourceManager.GetObject("img" + newBTN.Tag.ToString()) as Image;
+					await Task.Delay(500);
+					newBTN.BackgroundImage = Properties.Resources.back;
+					PrevBTN.BackgroundImage = Properties.Resources.back;
 				}
 
 				PrevBTN = null;
@@ -96,7 +104,7 @@ namespace WindowsFormsApp1
 
         private void CheckWin()
         {
-            foreach (Button e in buttons)
+            foreach (PictureBox e in buttons)
                 if (e.Visible == true) return;
 
             DialogResult dialogResult = MessageBox.Show("You won!", "WIN", MessageBoxButtons.RetryCancel);
